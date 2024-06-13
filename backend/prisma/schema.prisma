@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int          @id @default(autoincrement())
+  name      String
+  email     String       @unique
+  username  String?      @unique
+  provider  AuthProvider?
+  password  String
+  pic       String?
+  isAdmin   Boolean      @default(false)
+  createdAt DateTime     @default(now())
+  updateAt  DateTime     @updatedAt
+  lastLogin DateTime?
+  chats     Chat[]
+  chatUsers ChatUsers[]
+}
+
+model Chat {
+  id           Int         @id @default(autoincrement())
+  chatName     String
+  content      String?
+  isGroupChat  Boolean     @default(false)
+  viewCount    Int         @default(0)
+  groupAdmin   User?       @relation(fields: [groupAdminId], references: [id])
+  groupAdminId Int?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  ChatUsers    ChatUsers[]
+}
+
+model ChatUsers {
+  id        Int      @id @default(autoincrement())
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    Int
+  chat      Chat     @relation(fields: [chatId], references: [id])
+  chatId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum AuthProvider {
+  EMAIL
+  GOOGLE
+  GITHUB
+}
