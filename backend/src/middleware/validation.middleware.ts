@@ -6,12 +6,12 @@ export function validationMiddleware(
   schema: z.ZodObject<{}, 'strip', z.ZodTypeAny, {}, {}>,
 ) {
   return (req: Request, res: Response, next: NextFunction) => {
-    const { success } = schema.safeParse(req.body);
+    const { success,error } = schema.safeParse(req.body);
 
     if (!success) {
       return res.status(statusCode.BadRequest).json({
         statusCode: statusCode.BadRequest,
-        response: {},
+        response: error,
         message: 'Invalid input',
       });
     }

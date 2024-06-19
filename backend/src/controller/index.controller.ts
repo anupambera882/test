@@ -1,10 +1,12 @@
 import express, { Express, NextFunction, Request, Response } from 'express';
 import cookieParser from 'cookie-parser';
+import cors from 'cors'
 import authRouter from './auth.controller';
 import chatRouter from './chat.controller';
 import { statusCode } from '../share/enum';
 
 export function router(app: Express) {
+  app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
   app.use(express.json());
   app.use(cookieParser());
 
